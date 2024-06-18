@@ -78,4 +78,67 @@ def display_rewards():
 
 def main():
     if 'page' not in st.session_state:
- 
+        st.session_state.page = "main_menu"
+        st.session_state.progress = {"Quiz": False, "Interactive Story": False, "Timeline Puzzle": False, "RPG Game": False}
+
+    set_background_image()  # Ensure background image is set whenever the page is changed
+
+    if st.session_state.page == "main_menu":
+        st.title("Sudan Conflict")
+        if st.button("Play"):
+            st.session_state.page = "game_selection"
+            st.experimental_rerun()
+        if st.button("Rewards"):
+            st.session_state.page = "rewards"
+            st.experimental_rerun()
+
+    elif st.session_state.page == "game_selection":
+        st.title("Select a Game")
+        st.write("Choose one of the following games to learn more about the Sudan conflict.")
+        
+        if st.button("Quiz"):
+            st.session_state.page = "quiz"
+            st.experimental_rerun()
+
+        if st.button("Interactive Story"):
+            st.session_state.page = "interactive_story"
+            st.experimental_rerun()
+
+        if st.button("Timeline Puzzle"):
+            st.session_state.page = "timeline_puzzle"
+            st.experimental_rerun()
+
+        if st.button("RPG Game"):
+            st.session_state.page = "rpg_game"
+            st.experimental_rerun()
+
+        if st.button("Rewards"):
+            st.session_state.page = "rewards"
+            st.experimental_rerun()
+
+        st.write("### Progress")
+        total_games = len(st.session_state.progress)
+        completed_games = sum(st.session_state.progress.values())
+        st.progress(completed_games / total_games)
+
+    elif st.session_state.page == "quiz":
+        quiz_section()
+        st.session_state.progress["Quiz"] = True
+
+    elif st.session_state.page == "interactive_story":
+        story_section()
+        st.session_state.progress["Interactive Story"] = True
+
+    elif st.session_state.page == "timeline_puzzle":
+        timeline_puzzle()
+        st.session_state.progress["Timeline Puzzle"] = True
+
+    elif st.session_state.page == "rpg_game":
+        rpg_game()
+        st.session_state.progress["RPG Game"] = True
+
+    elif st.session_state.page == "rewards":
+        display_rewards()
+
+if __name__ == "__main__":
+    main()
