@@ -81,3 +81,82 @@ def main():
 
 if __name__ == "__main__":
     main()
+import streamlit as st
+
+# Function to display the current story part and options
+def display_story_part(story_part):
+    st.write(story_part["text"])
+    for option in story_part["options"]:
+        if st.button(option["label"]):
+            return option["next_part"]
+    return story_part["id"]
+
+# Function to load the story parts
+def load_story():
+    return {
+        "start": {
+            "id": "start",
+            "text": "You are a journalist covering the Sudan conflict. You have the opportunity to interview key figures. Who do you interview first?",
+            "options": [
+                {"label": "Government official", "next_part": "gov_official"},
+                {"label": "Rebel leader", "next_part": "rebel_leader"},
+                {"label": "Civilian", "next_part": "civilian"}
+            ]
+        },
+        "gov_official": {
+            "id": "gov_official",
+            "text": "The government official explains their stance on the conflict, emphasizing the need for national unity. Do you...",
+            "options": [
+                {"label": "Ask about human rights abuses", "next_part": "hr_abuses"},
+                {"label": "Inquire about economic policies", "next_part": "econ_policies"}
+            ]
+        },
+        "rebel_leader": {
+            "id": "rebel_leader",
+            "text": "The rebel leader discusses their fight against oppression. Do you...",
+            "options": [
+                {"label": "Ask about their demands", "next_part": "rebel_demands"},
+                {"label": "Inquire about their tactics", "next_part": "rebel_tactics"}
+            ]
+        },
+        "civilian": {
+            "id": "civilian",
+            "text": "The civilian shares their experiences living through the conflict. Do you...",
+            "options": [
+                {"label": "Ask about daily challenges", "next_part": "daily_challenges"},
+                {"label": "Inquire about their hopes for the future", "next_part": "future_hopes"}
+            ]
+        },
+        # Add more parts as needed
+        "hr_abuses": {
+            "id": "hr_abuses",
+            "text": "The official denies any human rights abuses, claiming they are propaganda. Do you...",
+            "options": [
+                {"label": "Challenge their claim", "next_part": "challenge_claim"},
+                {"label": "Move to another topic", "next_part": "gov_official"}
+            ]
+        },
+        "econ_policies": {
+            "id": "econ_policies",
+            "text": "The official outlines their economic policies aimed at stabilizing the country. Do you...",
+            "options": [
+                {"label": "Ask about foreign aid", "next_part": "foreign_aid"},
+                {"label": "Inquire about infrastructure projects", "next_part": "infrastructure"}
+            ]
+        },
+        # Continue to build out the story
+    }
+
+def main():
+    st.title("Sudan Conflict Interactive Story")
+    st.write("Make choices to navigate through the story and learn about the Sudan conflict.")
+
+    story = load_story()
+    current_part_id = "start"
+
+    while current_part_id:
+        story_part = story[current_part_id]
+        current_part_id = display_story_part(story_part)
+
+if __name__ == "__main__":
+    main()
