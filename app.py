@@ -1,5 +1,6 @@
 import streamlit as st
 import random
+import streamlit.components.v1 as components
 
 # Importing the different sections of the app
 from quiz import quiz_section
@@ -9,11 +10,11 @@ from rpg import rpg_game
 
 # List of background images
 background_images = [
-    "https://raw.githubusercontent.com/Reneprogrammer/game/main/image1.jpg",
-    "https://raw.githubusercontent.com/Reneprogrammer/game/main/image2.jpg",
-    "https://raw.githubusercontent.com/Reneprogrammer/game/main/image3.jpg",
-    "https://raw.githubusercontent.com/Reneprogrammer/game/main/image4.jpg",
-    "https://raw.githubusercontent.com/Reneprogrammer/game/main/image5.jpg"
+    "https://raw.githubusercontent.com/yourusername/yourrepository/main/image1.jpg",
+    "https://raw.githubusercontent.com/yourusername/yourrepository/main/image2.jpg",
+    "https://raw.githubusercontent.com/yourusername/yourrepository/main/image3.jpg",
+    "https://raw.githubusercontent.com/yourusername/yourrepository/main/image4.jpg",
+    "https://raw.githubusercontent.com/yourusername/yourrepository/main/image5.jpg"
 ]
 
 # List of articles
@@ -111,6 +112,47 @@ def display_rewards():
         st.session_state.page = "game_selection"
         st.experimental_rerun()
 
+# Function to interact with OpenAI API
+def get_chatbot_response(user_input):
+    response = openai.Completion.create(
+        engine="davinci",
+        prompt=user_input,
+        max_tokens=150
+    )
+    return response.choices[0].text.strip()
+
+def trigger_confetti():
+    confetti_script = """
+    <script>
+    function confetti() {
+        var duration = 5 * 1000;
+        var end = Date.now() + duration;
+
+        (function frame() {
+            confetti({
+                particleCount: 3,
+                angle: 60,
+                spread: 55,
+                origin: { x: 0 }
+            });
+            confetti({
+                particleCount: 3,
+                angle: 120,
+                spread: 55,
+                origin: { x: 1 }
+            });
+
+            if (Date.now() < end) {
+                requestAnimationFrame(frame);
+            }
+        }());
+    }
+    confetti();
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.4.0/dist/confetti.browser.min.js"></script>
+    """
+    components.html(confetti_script)
+
 def main():
     if 'page' not in st.session_state:
         st.session_state.page = "main_menu"
@@ -123,6 +165,12 @@ def main():
         if st.button("Play"):
             st.session_state.page = "game_selection"
             st.experimental_rerun()
+        # Add chatbot section
+        st.header("Ask the Chatbot")
+        user_input = st.text_input("Ask a question about the Sudan conflict:")
+        if user_input:
+            response = get_chatbot_response(user_input)
+            st.write(f"Chatbot: {response}")
 
     elif st.session_state.page == "game_selection":
         st.title("Select a Game")
@@ -152,6 +200,10 @@ def main():
         total_games = len(st.session_state.progress)
         completed_games = sum(st.session_state.progress.values())
         st.progress(completed_games / total_games)
+
+        if completed_games > 0:
+            trigger_confetti()
+            st.success("Congratulations! You've made progress!")
 
     elif st.session_state.page == "quiz":
         quiz_section()
