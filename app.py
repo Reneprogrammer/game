@@ -329,33 +329,19 @@ def check_order(selected_order, correct_order):
 
 def timeline_puzzle():
     st.header("Timeline Puzzle: Sudan Conflict")
-    st.write("Drag and drop the events to the correct years in chronological order:")
-
-    # Custom CSS to improve dropdown visibility
-    st.markdown("""
-        <style>
-        .stSelectbox div[role="listbox"] {
-            width: 300px !important;
-        }
-        </style>
-        """, unsafe_allow_html=True)
+    st.write("Arrange the events in the correct chronological order:")
 
     events = load_events()
     years = sorted(event["year"] for event in events)
     random.shuffle(events)  # Shuffle events to randomize their order
 
-    # Display years on the timeline
-    st.write("### Timeline")
-    columns = st.columns(len(years))
-    for col, year in zip(columns, years):
-        col.write(f"**{year}**")
-
-    # Display dropdowns below each year
+    # Display dropdowns for each year with enough space for visibility
     event_names = [event["event"] for event in events]
     selected_order = [None] * len(years)
 
-    for i, col in enumerate(columns):
-        selected_order[i] = col.selectbox(f"Select the event for the year {years[i]}:", [None] + event_names, key=f"select_{i}")
+    for i, year in enumerate(years):
+        st.write(f"**{year}**")
+        selected_order[i] = st.selectbox(f"Select the event for the year {year}:", [None] + event_names, key=f"select_{i}")
 
     if st.button("Submit"):
         correct_order = [event["event"] for event in sorted(events, key=lambda x: x["year"])]
