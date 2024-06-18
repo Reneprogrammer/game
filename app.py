@@ -64,20 +64,32 @@ def quiz_section():
     st.write("Answer the following questions about the Sudan conflict:")
 
     questions = load_questions()
-    score = 0
 
-    for i, question in enumerate(questions):
-        st.write(f"### Question {i + 1}: {question['question']}")
-        selected_option = st.radio(f"Select an option for question {i + 1}:", question["options"], key=f"q{i}")
-        if st.button(f"Submit Answer for Question {i + 1}", key=f"submit{i}"):
+    if 'current_question' not in st.session_state:
+        st.session_state.current_question = 0
+        st.session_state.score = 0
+
+    current_question = st.session_state.current_question
+
+    if current_question < len(questions):
+        question = questions[current_question]
+        st.write(f"### Question {current_question + 1}: {question['question']}")
+        selected_option = st.radio(f"Select an option for question {current_question + 1}:", question["options"], key=f"q{current_question}")
+        if st.button(f"Submit Answer for Question {current_question + 1}", key=f"submit{current_question}"):
             if check_answer(question, selected_option):
                 st.success("Correct!")
-                score += 1
+                st.session_state.score += 1
             else:
                 st.error(f"Incorrect. The correct answer is: {question['answer']}")
-
-    if st.button("Show Final Score"):
-        st.write(f"Your final score is: {score} out of {len(questions)}")
+            
+            st.session_state.current_question += 1
+            st.experimental_rerun()
+    else:
+        st.write(f"Your final score is: {st.session_state.score} out of {len(questions)}")
+        if st.button("Back to Menu"):
+            del st.session_state.current_question
+            del st.session_state.score
+            st.experimental_rerun()
 
 # Function to display the current story part and options
 def display_story_part(story, current_part_id):
