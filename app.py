@@ -80,12 +80,13 @@ def quiz_section():
         st.write(f"Your final score is: {score} out of {len(questions)}")
 
 # Function to display the current story part and options
-def display_story_part(story_part):
+def display_story_part(story, current_part_id):
+    story_part = story[current_part_id]
     st.write(story_part["text"])
     for option in story_part["options"]:
-        if st.button(option["label"], key=f"{story_part['id']}_{option['next_part']}"):
-            return option["next_part"]
-    return story_part["id"]
+        if st.button(option["label"], key=f"{current_part_id}_{option['next_part']}"):
+            st.session_state.current_part_id = option["next_part"]
+            st.experimental_rerun()
 
 # Function to load the story parts
 def load_story():
@@ -288,14 +289,10 @@ def story_section():
     st.write("Make choices to navigate through the story and learn about the Sudan conflict.")
 
     story = load_story()
-    current_part_id = "start"
+    if 'current_part_id' not in st.session_state:
+        st.session_state.current_part_id = "start"
 
-    while current_part_id:
-        story_part = story[current_part_id]
-        next_part_id = display_story_part(story_part)
-        if next_part_id == current_part_id or next_part_id == "end":
-            break
-        current_part_id = next_part_id
+    display_story_part(story, st.session_state.current_part_id)
 
 def main():
     st.title("Learn About the Sudan Conflict")
@@ -309,4 +306,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
