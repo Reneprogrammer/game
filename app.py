@@ -305,25 +305,11 @@ def story_section():
         st.session_state.current_part_id = "start"
 
     display_story_part(story, st.session_state.current_part_id)
-    
+
     # Button to go back to the main menu
     if st.button("Back to Menu"):
         del st.session_state.current_part_id
         st.experimental_rerun()
-        
-def main():
-    st.title("Learn About the Sudan Conflict")
-    st.sidebar.title("Navigation")
-    options = st.sidebar.radio("Go to", ["Quiz", "Interactive Story"])
-
-    if options == "Quiz":
-        quiz_section()
-    elif options == "Interactive Story":
-        story_section()
-
-if __name__ == "__main__":
-    main()
-
 
 # Function to load events
 def load_events():
@@ -361,6 +347,11 @@ def timeline_puzzle():
             st.write("Correct Order:")
             for event in correct_order:
                 st.write(f"{event['year']}: {event['event']}")
+
+    # Button to go back to the main menu
+    if st.button("Back to Menu"):
+        del st.session_state.selected_order
+        st.experimental_rerun()
 
 def main():
     st.title("Learn About the Sudan Conflict")
