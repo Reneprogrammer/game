@@ -1,23 +1,35 @@
 import streamlit as st
 import random
 import streamlit.components.v1 as components
+import pandas as pd
+import streamlit_authenticator as stauth
+import pymongo
+from pymongo import MongoClient
 
-# Importing the different sections of the app
-from quiz import quiz_section
-from story import story_section
-from timeline import timeline_puzzle
-from rpg import rpg_game
+# Database setup (MongoDB in this example)
+client = MongoClient('mongodb://localhost:27017/')
+db = client['sudan_conflict']
+users_collection = db['users']
+messages_collection = db['messages']
 
-# List of background images
+# User authentication setup
+usernames = ['user1', 'user2']
+names = ['User One', 'User Two']
+passwords = ['password1', 'password2']
+
+hashed_passwords = stauth.Hasher(passwords).generate()
+
+authenticator = stauth.Authenticate(names, usernames, hashed_passwords, 'some_cookie_name', 'some_signature_key', cookie_expiry_days=30)
+
+# Background images and articles
 background_images = [
-    "https://raw.githubusercontent.com/Reneprogrammer/game/main/image1.jpg",
-    "https://raw.githubusercontent.com/Reneprogrammer/game/main/image2.jpg",
-    "https://raw.githubusercontent.com/Reneprogrammer/game/main/image3.jpg",
-    "https://raw.githubusercontent.com/Reneprogrammer/game/main/image4.jpg",
-    "https://raw.githubusercontent.com/Reneprogrammer/game/main/image5.jpg"
+    "https://raw.githubusercontent.com/yourusername/yourrepository/main/image1.jpg",
+    "https://raw.githubusercontent.com/yourusername/yourrepository/main/image2.jpg",
+    "https://raw.githubusercontent.com/yourusername/yourrepository/main/image3.jpg",
+    "https://raw.githubusercontent.com/yourusername/yourrepository/main/image4.jpg",
+    "https://raw.githubusercontent.com/yourusername/yourrepository/main/image5.jpg"
 ]
 
-# List of articles
 articles = [
     {"title": "Article 1: Understanding the Roots of the Sudan Conflict", "link": "https://www.economist.com/leaders/2023/11/16/the-world-is-ignoring-war-genocide-and-famine-in-sudan"},
     {"title": "Article 2: The Impact of the Sudan Conflict on Civilians", "link": None},
@@ -26,7 +38,6 @@ articles = [
     {"title": "Article 5: Future Prospects for Peace in Sudan", "link": None}
 ]
 
-# Function to set the background image
 def set_background_image():
     page_index = {
         "main_menu": 0,
@@ -112,15 +123,6 @@ def display_rewards():
         st.session_state.page = "game_selection"
         st.experimental_rerun()
 
-# Function to interact with OpenAI API
-def get_chatbot_response(user_input):
-    response = openai.Completion.create(
-        engine="davinci",
-        prompt=user_input,
-        max_tokens=150
-    )
-    return response.choices[0].text.strip()
-
 def trigger_confetti():
     confetti_script = """
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.4.0/dist/confetti.browser.min.js"></script>
@@ -153,6 +155,26 @@ def trigger_confetti():
     """
     components.html(confetti_script, height=0, width=0)
 
+def display_discussion_board():
+    st.title("Community Discussion Board")
+    st.write("Share your thoughts and insights about the Sudan conflict here.")
+    
+    messages = list(messages_collection.find())
+    
+    for message in messages:
+        st.write(f"**{message['username']}**: {message['message']}")
+    
+    st.write("### Post a Message")
+    new_message = st.text_area("Your message", "")
+    if st.button("Post Message"):
+        if new_message:
+            message = {
+                "username": st.session_state["username"],
+                "message": new_message
+            }
+            messages_collection.insert_one(message)
+            st.experimental_rerun()
+
 def main():
     if 'page' not in st.session_state:
         st.session_state.page = "main_menu"
@@ -160,70 +182,86 @@ def main():
 
     set_background_image()  # Ensure background image is set whenever the page is changed
 
-    if st.session_state.page == "main_menu":
-        st.title("Sudan Conflict")
-        if st.button("Play"):
-            st.session_state.page = "game_selection"
-            st.experimental_rerun()
-        # Add chatbot section
-        st.header("Ask the Chatbot")
-        user_input = st.text_input("Ask a question about the Sudan conflict:")
-        if user_input:
-            response = get_chatbot_response(user_input)
-            st.write(f"Chatbot: {response}")
+    name, authentication_status, username = authenticator.login('Login', 'main')
 
-    elif st.session_state.page == "game_selection":
-        st.title("Select a Game")
-        st.write("Choose one of the following games to learn more about the Sudan conflict.")
-        
-        if st.button("Quiz"):
-            st.session_state.page = "quiz"
-            st.experimental_rerun()
+    if authentication_status:
+        st.session_state['username'] = username
 
-        if st.button("Interactive Story"):
-            st.session_state.page = "interactive_story"
-            st.experimental_rerun()
+        if st.session_state.page == "main_menu":
+            st.title("Sudan Conflict")
+            if st.button("Play"):
+                st.session_state.page = "game_selection"
+                st.experimental_rerun()
+            if st.button("Community"):
+                st.session_state.page = "community"
+                st.experimental_rerun()
+            # Add chatbot section
+            st.header("Ask the Chatbot")
+            user_input = st.text_input("Ask a question about the Sudan conflict:")
+            if user_input:
+                response = get_chatbot_response(user_input)
+                st.write(f"Chatbot: {response}")
 
-        if st.button("Timeline Puzzle"):
-            st.session_state.page = "timeline_puzzle"
-            st.experimental_rerun()
+        elif st.session_state.page == "game_selection":
+            st.title("Select a Game")
+            st.write("Choose one of the following games to learn more about the Sudan conflict.")
+            
+            if st.button("Quiz"):
+                st.session_state.page = "quiz"
+                st.experimental_rerun()
 
-        if st.button("RPG Game"):
-            st.session_state.page = "rpg_game"
-            st.experimental_rerun()
+            if st.button("Interactive Story"):
+                st.session_state.page = "interactive_story"
+                st.experimental_rerun()
 
-        if st.button("Rewards"):
-            st.session_state.page = "rewards"
-            st.experimental_rerun()
+            if st.button("Timeline Puzzle"):
+                st.session_state.page = "timeline_puzzle"
+                st.experimental_rerun()
 
-        st.write("### Progress")
-        total_games = len(st.session_state.progress)
-        completed_games = sum(st.session_state.progress.values())
-        st.progress(completed_games / total_games)
+            if st.button("RPG Game"):
+                st.session_state.page = "rpg_game"
+                st.experimental_rerun()
 
-        if completed_games > 0:
-            trigger_confetti()
-            st.success("Congratulations! You've made progress!")
+            if st.button("Rewards"):
+                st.session_state.page = "rewards"
+                st.experimental_rerun()
 
-    elif st.session_state.page == "quiz":
-        quiz_section()
-        if 'quiz_completed' in st.session_state and st.session_state.quiz_completed:
-            st.session_state.progress["Quiz"] = True
+            st.write("### Progress")
+            total_games = len(st.session_state.progress)
+            completed_games = sum(st.session_state.progress.values())
+            st.progress(completed_games / total_games)
 
-    elif st.session_state.page == "interactive_story":
-        story_section()
-        st.session_state.progress["Interactive Story"] = True
+            if completed_games > 0:
+                trigger_confetti()
+                st.success("Congratulations! You've made progress!")
 
-    elif st.session_state.page == "timeline_puzzle":
-        timeline_puzzle()
-        st.session_state.progress["Timeline Puzzle"] = True
+        elif st.session_state.page == "quiz":
+            quiz_section()
+            if 'quiz_completed' in st.session_state and st.session_state.quiz_completed:
+                st.session_state.progress["Quiz"] = True
 
-    elif st.session_state.page == "rpg_game":
-        rpg_game()
-        st.session_state.progress["RPG Game"] = True
+        elif st.session_state.page == "interactive_story":
+            story_section()
+            st.session_state.progress["Interactive Story"] = True
 
-    elif st.session_state.page == "rewards":
-        display_rewards()
+        elif st.session_state.page == "timeline_puzzle":
+            timeline_puzzle()
+            st.session_state.progress["Timeline Puzzle"] = True
+
+        elif st.session_state.page == "rpg_game":
+            rpg_game()
+            st.session_state.progress["RPG Game"] = True
+
+        elif st.session_state.page == "rewards":
+            display_rewards()
+
+        elif st.session_state.page == "community":
+            display_discussion_board()
+
+    elif authentication_status == False:
+        st.error('Username/password is incorrect')
+    elif authentication_status == None:
+        st.warning('Please enter your username and password')
 
     close_background_image()
 
