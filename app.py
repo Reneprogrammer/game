@@ -88,9 +88,6 @@ def main():
         if st.button("Play"):
             st.session_state.page = "game_selection"
             st.experimental_rerun()
-        if st.button("Rewards"):
-            st.session_state.page = "rewards"
-            st.experimental_rerun()
 
     elif st.session_state.page == "game_selection":
         st.title("Select a Game")
@@ -123,7 +120,9 @@ def main():
 
     elif st.session_state.page == "quiz":
         quiz_section()
-        st.session_state.progress["Quiz"] = True
+        # Check if the quiz was completed successfully
+        if 'quiz_completed' in st.session_state and st.session_state.quiz_completed:
+            st.session_state.progress["Quiz"] = True
 
     elif st.session_state.page == "interactive_story":
         story_section()
