@@ -12,8 +12,6 @@ background_images = [
 
 # Function to set the background image
 def set_background_image():
-    if 'page' not in st.session_state:
-        st.session_state.page = "main_menu"
     page_index = {
         "main_menu": 0,
         "game_selection": 1,
@@ -37,9 +35,6 @@ def set_background_image():
         """,
         unsafe_allow_html=True
     )
-
-# Ensure background image is set
-set_background_image()
 
 # Function to load questions and answers
 def load_questions():
@@ -476,6 +471,8 @@ def main():
     if 'page' not in st.session_state:
         st.session_state.page = "main_menu"
         st.session_state.progress = {"Quiz": False, "Interactive Story": False, "Timeline Puzzle": False, "RPG Game": False}
+
+    set_background_image()  # Ensure background image is set whenever the page is changed
 
     if st.session_state.page == "main_menu":
         st.title("Sudan Conflict")
