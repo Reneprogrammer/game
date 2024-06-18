@@ -10,11 +10,11 @@ from rpg import rpg_game
 
 # List of background images
 background_images = [
-    "https://raw.githubusercontent.com/Reneprogrammer/game/main/image1.jpg",
-    "https://raw.githubusercontent.com/Reneprogrammer/game/main/image2.jpg",
-    "https://raw.githubusercontent.com/Reneprogrammer/game/main/image3.jpg",
-    "https://raw.githubusercontent.com/Reneprogrammer/game/main/image4.jpg",
-    "https://raw.githubusercontent.com/Reneprogrammer/game/main/image5.jpg"
+    "https://raw.githubusercontent.com/yourusername/yourrepository/main/image1.jpg",
+    "https://raw.githubusercontent.com/yourusername/yourrepository/main/image2.jpg",
+    "https://raw.githubusercontent.com/yourusername/yourrepository/main/image3.jpg",
+    "https://raw.githubusercontent.com/yourusername/yourrepository/main/image4.jpg",
+    "https://raw.githubusercontent.com/yourusername/yourrepository/main/image5.jpg"
 ]
 
 # List of articles
@@ -44,7 +44,7 @@ def set_background_image():
         f"""
         <style>
         .stApp {{
-            background-color: #0e1117;
+            background-color: white;
         }}
         .bg-container {{
             display: flex;
@@ -57,14 +57,14 @@ def set_background_image():
             background-position: top right;
         }}
         .main-content {{
-            background: rgba(0, 0, 0, 0.7);
+            background: rgba(255, 255, 255, 0.8);
             padding: 20px;
             border-radius: 10px;
             max-width: 80%;
-            color: white;
+            color: black;
         }}
         .main-content h1, .main-content h2, .main-content h3, .main-content p {{
-            color: white;
+            color: black;
         }}
         .main-content .stButton>button {{
             background-color: #f4a261;
@@ -112,17 +112,9 @@ def display_rewards():
         st.session_state.page = "game_selection"
         st.experimental_rerun()
 
-# Function to interact with OpenAI API
-def get_chatbot_response(user_input):
-    response = openai.Completion.create(
-        engine="davinci",
-        prompt=user_input,
-        max_tokens=150
-    )
-    return response.choices[0].text.strip()
-
 def trigger_confetti():
     confetti_script = """
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.4.0/dist/confetti.browser.min.js"></script>
     <script>
     function confetti() {
         var duration = 5 * 1000;
@@ -149,9 +141,8 @@ def trigger_confetti():
     }
     confetti();
     </script>
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.4.0/dist/confetti.browser.min.js"></script>
     """
-    components.html(confetti_script)
+    components.html(confetti_script, height=0, width=0)
 
 def main():
     if 'page' not in st.session_state:
