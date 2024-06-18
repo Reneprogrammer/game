@@ -68,7 +68,7 @@ def quiz_section():
 
     for i, question in enumerate(questions):
         st.write(f"### Question {i + 1}: {question['question']}")
-        selected_option = st.radio("Select an option:", question["options"], key=f"q{i}")
+        selected_option = st.radio(f"Select an option for question {i + 1}:", question["options"], key=f"q{i}")
         if st.button(f"Submit Answer for Question {i + 1}", key=f"submit{i}"):
             if check_answer(question, selected_option):
                 st.success("Correct!")
@@ -83,7 +83,7 @@ def quiz_section():
 def display_story_part(story_part):
     st.write(story_part["text"])
     for option in story_part["options"]:
-        if st.button(option["label"], key=option["next_part"]):
+        if st.button(option["label"], key=f"{story_part['id']}_{option['next_part']}"):
             return option["next_part"]
     return story_part["id"]
 
@@ -152,7 +152,10 @@ def story_section():
 
     while current_part_id:
         story_part = story[current_part_id]
-        current_part_id = display_story_part(story_part)
+        next_part_id = display_story_part(story_part)
+        if next_part_id == current_part_id:
+            break
+        current_part_id = next_part_id
 
 def main():
     st.title("Learn About the Sudan Conflict")
@@ -166,4 +169,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
