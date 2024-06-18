@@ -90,6 +90,7 @@ def quiz_section():
         if st.button("Back to Menu"):
             del st.session_state.current_question
             del st.session_state.score
+            st.session_state.page = "game_selection"
             st.experimental_rerun()
 
 # Function to display the current story part and options
@@ -310,6 +311,7 @@ def story_section():
     # Button to go back to the main menu
     if st.button("Back to Menu"):
         del st.session_state.current_part_id
+        st.session_state.page = "game_selection"
         st.experimental_rerun()
 
 # Function to load events
@@ -361,6 +363,7 @@ def timeline_puzzle():
     # Button to go back to the main menu
     if st.button("Back to Menu"):
         del st.session_state['selected_order']
+        st.session_state.page = "game_selection"
         st.experimental_rerun()
 
 # RPG Game
@@ -425,20 +428,61 @@ def rpg_game():
     For more information and ways to help, please visit reputable sources and organizations working in the region.
     """)
 
-# Main function with updated navigation
-def main():
-    st.title("Learn About the Sudan Conflict")
-    st.sidebar.title("Navigation")
-    options = st.sidebar.radio("Go to", ["Quiz", "Interactive Story", "Timeline Puzzle", "RPG Game"], key='main_navigation')
+    if st.button("Back to Menu"):
+        st.session_state.page = "game_selection"
+        st.experimental_rerun()
 
-    if options == "Quiz":
+def main():
+    if 'page' not in st.session_state:
+        st.session_state.page = "main_menu"
+        st.session_state.progress = {"Quiz": False, "Interactive Story": False, "Timeline Puzzle": False, "RPG Game": False}
+
+    if st.session_state.page == "main_menu":
+        st.title("Sudan Conflict")
+        if st.button("Play"):
+            st.session_state.page = "game_selection"
+            st.experimental_rerun()
+
+    elif st.session_state.page == "game_selection":
+        st.title("Select a Game")
+        st.write("Choose one of the following games to learn more about the Sudan conflict.")
+        
+        if st.button("Quiz"):
+            st.session_state.page = "quiz"
+            st.experimental_rerun()
+
+        if st.button("Interactive Story"):
+            st.session_state.page = "interactive_story"
+            st.experimental_rerun()
+
+        if st.button("Timeline Puzzle"):
+            st.session_state.page = "timeline_puzzle"
+            st.experimental_rerun()
+
+        if st.button("RPG Game"):
+            st.session_state.page = "rpg_game"
+            st.experimental_rerun()
+
+        st.write("### Progress")
+        total_games = len(st.session_state.progress)
+        completed_games = sum(st.session_state.progress.values())
+        st.progress(completed_games / total_games)
+
+    elif st.session_state.page == "quiz":
         quiz_section()
-    elif options == "Interactive Story":
+        st.session_state.progress["Quiz"] = True
+
+    elif st.session_state.page == "interactive_story":
         story_section()
-    elif options == "Timeline Puzzle":
+        st.session_state.progress["Interactive Story"] = True
+
+    elif st.session_state.page == "timeline_puzzle":
         timeline_puzzle()
-    elif options == "RPG Game":
+        st.session_state.progress["Timeline Puzzle"] = True
+
+    elif st.session_state.page == "rpg_game":
         rpg_game()
+        st.session_state.progress["RPG Game"] = True
 
 if __name__ == "__main__":
     main()
