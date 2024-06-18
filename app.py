@@ -3,11 +3,11 @@ import random
 
 # List of background images
 background_images = [
-    "https://github.com/yourusername/yourrepository/raw/main/image1.jpg",
-    "https://github.com/yourusername/yourrepository/raw/main/image2.jpg",
-    "https://github.com/yourusername/yourrepository/raw/main/image3.jpg",
-    "https://github.com/yourusername/yourrepository/raw/main/image4.jpg",
-    "https://github.com/yourusername/yourrepository/raw/main/image5.jpg"
+    "https://github.com/Reneprogrammer/game/raw/main/image1.jpg",
+    "https://github.com/Reneprogrammer/game/raw/main/image2.jpg",
+    "https://github.com/Reneprogrammer/game/raw/main/image3.jpg",
+    "https://github.com/Reneprogrammer/game/raw/main/image4.jpg",
+    "https://github.com/Reneprogrammer/game/raw/main/image5.jpg"
 ]
 
 # Function to set the background image
