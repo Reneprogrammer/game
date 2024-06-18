@@ -45,6 +45,19 @@ def set_background_image():
         .stApp {{
             background: url("{bg_image}") no-repeat center center fixed;
             background-size: cover;
+            background-blend-mode: overlay;
+        }}
+        .main-content {{
+            background: rgba(0, 0, 0, 0.6);
+            padding: 20px;
+            border-radius: 10px;
+        }}
+        .main-content h1, .main-content h2, .main-content h3, .main-content p {{
+            color: white;
+        }}
+        .main-content .stButton>button {{
+            background-color: white;
+            color: black;
         }}
         </style>
         """,
@@ -52,6 +65,7 @@ def set_background_image():
     )
 
 def display_rewards():
+    st.markdown('<div class="main-content">', unsafe_allow_html=True)
     st.title("Rewards")
     st.write("Complete the games to unlock free articles about the Sudan conflict.")
     
@@ -75,6 +89,7 @@ def display_rewards():
     if st.button("Back to Menu"):
         st.session_state.page = "game_selection"
         st.experimental_rerun()
+    st.markdown('</div>', unsafe_allow_html=True)
 
 def main():
     if 'page' not in st.session_state:
@@ -82,6 +97,8 @@ def main():
         st.session_state.progress = {"Quiz": False, "Interactive Story": False, "Timeline Puzzle": False, "RPG Game": False}
 
     set_background_image()  # Ensure background image is set whenever the page is changed
+
+    st.markdown('<div class="main-content">', unsafe_allow_html=True)
 
     if st.session_state.page == "main_menu":
         st.title("Sudan Conflict")
@@ -120,7 +137,6 @@ def main():
 
     elif st.session_state.page == "quiz":
         quiz_section()
-        # Check if the quiz was completed successfully
         if 'quiz_completed' in st.session_state and st.session_state.quiz_completed:
             st.session_state.progress["Quiz"] = True
 
@@ -138,6 +154,8 @@ def main():
 
     elif st.session_state.page == "rewards":
         display_rewards()
+
+    st.markdown('</div>', unsafe_allow_html=True)
 
 if __name__ == "__main__":
     main()
