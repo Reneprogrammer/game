@@ -13,13 +13,13 @@ def load_events():
 def check_order(selected_order, correct_order):
     return selected_order == correct_order
 
-def timeline_puzzle():
+def timeline_section():
     st.header("Timeline Puzzle: Sudan Conflict")
     st.write("Arrange the events in the correct chronological order:")
 
     events = load_events()
     years = sorted(event["year"] for event in events)
-    random.shuffle(events)
+    random.shuffle(events)  # Shuffle events to randomize their order
 
     if 'selected_order' not in st.session_state:
         st.session_state.selected_order = [None] * len(years)
