@@ -9,11 +9,11 @@ from rpg import rpg_game
 
 # List of background images
 background_images = [
-    "https://raw.githubusercontent.com/Reneprogrammer/game/main/image1.jpg",
-    "https://raw.githubusercontent.com/Reneprogrammer/game/main/image2.jpg",
-    "https://raw.githubusercontent.com/Reneprogrammer/game/main/image3.jpg",
-    "https://raw.githubusercontent.com/Reneprogrammer/game/main/image4.jpg",
-    "https://raw.githubusercontent.com/Reneprogrammer/game/main/image5.jpg"
+    "https://raw.githubusercontent.com/yourusername/yourrepository/main/image1.jpg",
+    "https://raw.githubusercontent.com/yourusername/yourrepository/main/image2.jpg",
+    "https://raw.githubusercontent.com/yourusername/yourrepository/main/image3.jpg",
+    "https://raw.githubusercontent.com/yourusername/yourrepository/main/image4.jpg",
+    "https://raw.githubusercontent.com/yourusername/yourrepository/main/image5.jpg"
 ]
 
 # List of articles
@@ -43,29 +43,48 @@ def set_background_image():
         f"""
         <style>
         .stApp {{
-            background: url("{bg_image}") no-repeat center center fixed;
-            background-size: cover;
-            background-blend-mode: overlay;
+            background-color: #0e1117;
+        }}
+        .bg-container {{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }}
+        .bg-image {{
+            width: 30%;
+            margin-right: 20px;
         }}
         .main-content {{
-            background: rgba(0, 0, 0, 0.6);
+            background: rgba(255, 255, 255, 0.8);
             padding: 20px;
             border-radius: 10px;
+            color: black;
         }}
         .main-content h1, .main-content h2, .main-content h3, .main-content p {{
-            color: white;
+            color: black;
         }}
         .main-content .stButton>button {{
-            background-color: white;
-            color: black;
+            background-color: black;
+            color: white;
         }}
         </style>
         """,
         unsafe_allow_html=True
     )
+    st.markdown(
+        f"""
+        <div class="bg-container">
+            <img src="{bg_image}" class="bg-image">
+            <div class="main-content">
+        """,
+        unsafe_allow_html=True
+    )
+
+def close_background_image():
+    st.markdown("</div></div>", unsafe_allow_html=True)
 
 def display_rewards():
-    st.markdown('<div class="main-content">', unsafe_allow_html=True)
     st.title("Rewards")
     st.write("Complete the games to unlock free articles about the Sudan conflict.")
     
@@ -89,7 +108,6 @@ def display_rewards():
     if st.button("Back to Menu"):
         st.session_state.page = "game_selection"
         st.experimental_rerun()
-    st.markdown('</div>', unsafe_allow_html=True)
 
 def main():
     if 'page' not in st.session_state:
@@ -97,8 +115,6 @@ def main():
         st.session_state.progress = {"Quiz": False, "Interactive Story": False, "Timeline Puzzle": False, "RPG Game": False}
 
     set_background_image()  # Ensure background image is set whenever the page is changed
-
-    st.markdown('<div class="main-content">', unsafe_allow_html=True)
 
     if st.session_state.page == "main_menu":
         st.title("Sudan Conflict")
@@ -155,7 +171,7 @@ def main():
     elif st.session_state.page == "rewards":
         display_rewards()
 
-    st.markdown('</div>', unsafe_allow_html=True)
+    close_background_image()
 
 if __name__ == "__main__":
     main()
