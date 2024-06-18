@@ -44,29 +44,39 @@ def set_background_image():
         <style>
         .stApp {{
             background-color: #0e1117;
+            color: white;
         }}
         .bg-container {{
             display: flex;
             align-items: center;
             justify-content: center;
             height: 100vh;
+            background-image: url({bg_image});
+            background-size: cover;
+            background-position: center;
         }}
         .bg-image {{
-            width: 30%;
-            margin-right: 20px;
+            max-width: 30%;
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }}
         .main-content {{
-            background: rgba(255, 255, 255, 0.8);
-            padding: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 40px;
             border-radius: 10px;
-            color: black;
+            max-width: 70%;
+            color: white;
+            text-align: center;
         }}
         .main-content h1, .main-content h2, .main-content h3, .main-content p {{
-            color: black;
+            color: white;
         }}
         .main-content .stButton>button {{
-            background-color: black;
-            color: white;
+            background-color: #f4a261;
+            color: black;
+            font-weight: bold;
+            border-radius: 5px;
         }}
         </style>
         """,
@@ -75,7 +85,6 @@ def set_background_image():
     st.markdown(
         f"""
         <div class="bg-container">
-            <img src="{bg_image}" class="bg-image">
             <div class="main-content">
         """,
         unsafe_allow_html=True
