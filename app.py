@@ -331,6 +331,15 @@ def timeline_puzzle():
     st.header("Timeline Puzzle: Sudan Conflict")
     st.write("Drag and drop the events to the correct years in chronological order:")
 
+    # Custom CSS to improve dropdown visibility
+    st.markdown("""
+        <style>
+        .stSelectbox div[role="listbox"] {
+            width: 300px !important;
+        }
+        </style>
+        """, unsafe_allow_html=True)
+
     events = load_events()
     years = sorted(event["year"] for event in events)
     random.shuffle(events)  # Shuffle events to randomize their order
@@ -379,3 +388,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
