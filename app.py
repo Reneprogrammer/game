@@ -311,6 +311,8 @@ def story_section():
         del st.session_state.current_part_id
         st.experimental_rerun()
 
+import random
+
 # Function to load events
 def load_events():
     return [
@@ -326,26 +328,27 @@ def check_order(selected_order, correct_order):
 
 def timeline_puzzle():
     st.header("Timeline Puzzle: Sudan Conflict")
-    st.write("Arrange the events in the correct chronological order:")
+    st.write("Drag and drop the events to the correct years in chronological order:")
 
     events = load_events()
-    correct_order = sorted(events, key=lambda x: x["year"])
-    event_names = [event["event"] for event in events]
+    years = sorted(event["year"] for event in events)
+    random.shuffle(events)  # Shuffle events to randomize their order
 
     if 'selected_order' not in st.session_state:
         st.session_state.selected_order = [None] * len(events)
 
-    for i, event in enumerate(event_names):
-        st.session_state.selected_order[i] = st.selectbox(f"Select the position for: {event}", [None] + event_names, key=f"select{i}")
+    for i, year in enumerate(years):
+        options = [None] + [event["event"] for event in events]
+        st.session_state.selected_order[i] = st.selectbox(f"Select the event for the year {year}:", options, key=f"select{i}")
 
     if st.button("Submit"):
-        correct_event_names = [event["event"] for event in correct_order]
-        if check_order(st.session_state.selected_order, correct_event_names):
+        correct_order = [event["event"] for event in sorted(events, key=lambda x: x["year"])]
+        if check_order(st.session_state.selected_order, correct_order):
             st.success("Correct! The events are in the correct chronological order.")
         else:
             st.error("Incorrect. Try again.")
             st.write("Correct Order:")
-            for event in correct_order:
+            for event in sorted(events, key=lambda x: x["year"]):
                 st.write(f"{event['year']}: {event['event']}")
 
     # Button to go back to the main menu
@@ -353,6 +356,7 @@ def timeline_puzzle():
         del st.session_state.selected_order
         st.experimental_rerun()
 
+# Main function to integrate with the existing Streamlit app
 def main():
     st.title("Learn About the Sudan Conflict")
     st.sidebar.title("Navigation")
