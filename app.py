@@ -337,17 +337,16 @@ def timeline_puzzle():
 
     # Display years on the timeline
     st.write("### Timeline")
-    timeline_placeholder = st.empty()
-    with timeline_placeholder.container():
-        for year in years:
-            st.write(f"**{year}**", key=f"year_{year}")
+    columns = st.columns(len(years))
+    for col, year in zip(columns, years):
+        col.write(f"**{year}**")
 
-    st.write("### Events")
+    # Display dropdowns below each year
     event_names = [event["event"] for event in events]
     selected_order = [None] * len(years)
 
-    for i, year in enumerate(years):
-        selected_order[i] = st.selectbox(f"Select the event for the year {year}:", [None] + event_names, key=f"select_{i}")
+    for i, col in enumerate(columns):
+        selected_order[i] = col.selectbox(f"Select the event for the year {years[i]}:", [None] + event_names, key=f"select_{i}")
 
     if st.button("Submit"):
         correct_order = [event["event"] for event in sorted(events, key=lambda x: x["year"])]
@@ -380,3 +379,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
