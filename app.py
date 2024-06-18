@@ -59,16 +59,16 @@ def load_questions():
 def check_answer(question, selected_option):
     return question["answer"] == selected_option
 
-def main():
-    st.title("Learn About the Sudan Conflict")
-    st.write("Test your knowledge about the Sudan conflict by answering the following questions:")
+def quiz_section():
+    st.header("Quiz: Test Your Knowledge")
+    st.write("Answer the following questions about the Sudan conflict:")
 
     questions = load_questions()
     score = 0
 
     for i, question in enumerate(questions):
         st.write(f"### Question {i + 1}: {question['question']}")
-        selected_option = st.radio("", question["options"], key=f"q{i}")
+        selected_option = st.radio("Select an option:", question["options"], key=f"q{i}")
         if st.button(f"Submit Answer for Question {i + 1}", key=f"submit{i}"):
             if check_answer(question, selected_option):
                 st.success("Correct!")
@@ -79,15 +79,11 @@ def main():
     if st.button("Show Final Score"):
         st.write(f"Your final score is: {score} out of {len(questions)}")
 
-if __name__ == "__main__":
-    main()
-import streamlit as st
-
 # Function to display the current story part and options
 def display_story_part(story_part):
     st.write(story_part["text"])
     for option in story_part["options"]:
-        if st.button(option["label"]):
+        if st.button(option["label"], key=option["next_part"]):
             return option["next_part"]
     return story_part["id"]
 
@@ -147,8 +143,8 @@ def load_story():
         # Continue to build out the story
     }
 
-def main():
-    st.title("Sudan Conflict Interactive Story")
+def story_section():
+    st.header("Interactive Story: Experience the Sudan Conflict")
     st.write("Make choices to navigate through the story and learn about the Sudan conflict.")
 
     story = load_story()
@@ -158,5 +154,16 @@ def main():
         story_part = story[current_part_id]
         current_part_id = display_story_part(story_part)
 
+def main():
+    st.title("Learn About the Sudan Conflict")
+    st.sidebar.title("Navigation")
+    options = st.sidebar.radio("Go to", ["Quiz", "Interactive Story"])
+
+    if options == "Quiz":
+        quiz_section()
+    elif options == "Interactive Story":
+        story_section()
+
 if __name__ == "__main__":
     main()
+
