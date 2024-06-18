@@ -36,7 +36,8 @@ def set_background_image():
         "interactive_story": 3,
         "timeline_puzzle": 4,
         "rpg_game": 5,
-        "rewards": 6
+        "rewards": 6,
+        "community": 7
     }.get(st.session_state.page, 0)
     
     bg_image = background_images[page_index % len(background_images)]
@@ -49,13 +50,10 @@ def set_background_image():
         }}
         .bg-container {{
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
             height: 100vh;
-            background-image: url({bg_image});
-            background-size: contain;
-            background-repeat: no-repeat;
-            background-position: top right;
         }}
         .main-content {{
             background: rgba(255, 255, 255, 0.8);
@@ -73,6 +71,14 @@ def set_background_image():
             font-weight: bold;
             border-radius: 5px;
         }}
+        .image-container {{
+            margin-top: 20px;
+        }}
+        .image-container img {{
+            width: 100%;
+            height: auto;
+            max-width: 600px;
+        }}
         </style>
         """,
         unsafe_allow_html=True
@@ -86,7 +92,16 @@ def set_background_image():
     )
 
 def close_background_image():
-    st.markdown("</div></div>", unsafe_allow_html=True)
+    st.markdown(
+        f"""
+            </div>
+            <div class="image-container">
+                <img src="{background_images[st.session_state.page_index % len(background_images)]}" alt="Background Image">
+            </div>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
 
 def display_rewards():
     st.title("Rewards")
@@ -108,10 +123,8 @@ def display_rewards():
                 st.write(f"**Unlocked**: {article['title']}")
         else:
             st.write(f"**Locked**: {article['title']}")
-    
-    if st.button("Back to Menu"):
-        st.session_state.page = "game_selection"
-        st.experimental_rerun()
+
+    st.button("Back to Menu", on_click=lambda: navigate_to('game_selection'))
 
 def trigger_confetti():
     confetti_script = """
@@ -163,9 +176,17 @@ def display_discussion_board():
             messages_db.append(message)
             st.experimental_rerun()
 
+    st.button("Back to Menu", on_click=lambda: navigate_to('game_selection'))
+
+def navigate_to(page):
+    st.session_state.page = page
+    st.session_state.page_index += 1
+    st.experimental_rerun()
+
 def main():
     if 'page' not in st.session_state:
         st.session_state.page = "main_menu"
+        st.session_state.page_index = 0
         st.session_state.progress = {"Quiz": False, "Interactive Story": False, "Timeline Puzzle": False, "RPG Game": False}
 
     set_background_image()  # Ensure background image is set whenever the page is changed
@@ -185,41 +206,28 @@ def main():
         if st.session_state.page == "main_menu":
             st.title("Sudan Conflict")
             if st.button("Play"):
-                st.session_state.page = "game_selection"
-                st.experimental_rerun()
+                navigate_to('game_selection')
             if st.button("Community"):
-                st.session_state.page = "community"
-                st.experimental_rerun()
-            # Add chatbot section
-            st.header("Ask the Chatbot")
-            user_input = st.text_input("Ask a question about the Sudan conflict:")
-            if user_input:
-                response = get_chatbot_response(user_input)
-                st.write(f"Chatbot: {response}")
+                navigate_to('community')
 
         elif st.session_state.page == "game_selection":
             st.title("Select a Game")
             st.write("Choose one of the following games to learn more about the Sudan conflict.")
             
             if st.button("Quiz"):
-                st.session_state.page = "quiz"
-                st.experimental_rerun()
+                navigate_to('quiz')
 
             if st.button("Interactive Story"):
-                st.session_state.page = "interactive_story"
-                st.experimental_rerun()
+                navigate_to('interactive_story')
 
             if st.button("Timeline Puzzle"):
-                st.session_state.page = "timeline_puzzle"
-                st.experimental_rerun()
+                navigate_to('timeline_puzzle')
 
             if st.button("RPG Game"):
-                st.session_state.page = "rpg_game"
-                st.experimental_rerun()
+                navigate_to('rpg_game')
 
             if st.button("Rewards"):
-                st.session_state.page = "rewards"
-                st.experimental_rerun()
+                navigate_to('rewards')
 
             st.write("### Progress")
             total_games = len(st.session_state.progress)
@@ -234,24 +242,36 @@ def main():
             quiz_section()
             if 'quiz_completed' in st.session_state and st.session_state.quiz_completed:
                 st.session_state.progress["Quiz"] = True
+            st.button("Back to Menu", on_click=lambda: navigate_to('game_selection'))
+            st.button("Back", on_click=lambda: navigate_to('main_menu'))
 
         elif st.session_state.page == "interactive_story":
             story_section()
             st.session_state.progress["Interactive Story"] = True
+            st.button("Back to Menu", on_click=lambda: navigate_to('game_selection'))
+            st.button("Back", on_click=lambda: navigate_to('main_menu'))
 
         elif st.session_state.page == "timeline_puzzle":
             timeline_puzzle()
             st.session_state.progress["Timeline Puzzle"] = True
+            st.button("Back to Menu", on_click=lambda: navigate_to('game_selection'))
+            st.button("Back", on_click=lambda: navigate_to('main_menu'))
 
         elif st.session_state.page == "rpg_game":
             rpg_game()
             st.session_state.progress["RPG Game"] = True
+            st.button("Back to Menu", on_click=lambda: navigate_to('game_selection'))
+            st.button("Back", on_click=lambda: navigate_to('main_menu'))
 
         elif st.session_state.page == "rewards":
             display_rewards()
+            st.button("Back to Menu", on_click=lambda: navigate_to('game_selection'))
+            st.button("Back", on_click=lambda: navigate_to('main_menu'))
 
         elif st.session_state.page == "community":
             display_discussion_board()
+            st.button("Back to Menu", on_click=lambda: navigate_to('game_selection'))
+            st.button("Back", on_click=lambda: navigate_to('main_menu'))
 
     close_background_image()
 
