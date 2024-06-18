@@ -337,15 +337,17 @@ def timeline_puzzle():
 
     # Display dropdowns for each year with enough space for visibility
     event_names = [event["event"] for event in events]
-    selected_order = [None] * len(years)
+
+    if 'selected_order' not in st.session_state:
+        st.session_state.selected_order = [None] * len(years)
 
     for i, year in enumerate(years):
         st.write(f"**{year}**")
-        selected_order[i] = st.selectbox(f"Select the event for the year {year}:", [None] + event_names, key=f"select_{i}")
+        st.session_state.selected_order[i] = st.selectbox(f"Select the event for the year {year}:", [None] + event_names, key=f"select_{i}")
 
     if st.button("Submit"):
         correct_order = [event["event"] for event in sorted(events, key=lambda x: x["year"])]
-        if check_order(selected_order, correct_order):
+        if check_order(st.session_state.selected_order, correct_order):
             st.success("Correct! The events are in the correct chronological order.")
         else:
             st.error("Incorrect. Try again.")
@@ -355,8 +357,7 @@ def timeline_puzzle():
 
     # Button to go back to the main menu
     if st.button("Back to Menu"):
-        for i in range(len(years)):
-            del st.session_state[f"select_{i}"]
+        del st.session_state.selected_order
         st.experimental_rerun()
 
 # Main function to integrate with the existing Streamlit app
