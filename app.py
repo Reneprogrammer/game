@@ -44,7 +44,6 @@ def set_background_image():
         <style>
         .stApp {{
             background-color: #0e1117;
-            color: white;
         }}
         .bg-container {{
             display: flex;
@@ -52,22 +51,16 @@ def set_background_image():
             justify-content: center;
             height: 100vh;
             background-image: url({bg_image});
-            background-size: cover;
-            background-position: center;
-        }}
-        .bg-image {{
-            max-width: 30%;
-            height: auto;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: top right;
         }}
         .main-content {{
             background: rgba(0, 0, 0, 0.7);
-            padding: 40px;
+            padding: 20px;
             border-radius: 10px;
-            max-width: 70%;
+            max-width: 80%;
             color: white;
-            text-align: center;
         }}
         .main-content h1, .main-content h2, .main-content h3, .main-content p {{
             color: white;
