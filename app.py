@@ -311,6 +311,7 @@ def story_section():
         del st.session_state.current_part_id
         st.experimental_rerun()
 
+import streamlit as st
 import random
 
 # Function to load events
@@ -334,16 +335,23 @@ def timeline_puzzle():
     years = sorted(event["year"] for event in events)
     random.shuffle(events)  # Shuffle events to randomize their order
 
-    if 'selected_order' not in st.session_state:
-        st.session_state.selected_order = [None] * len(events)
+    # Display years on the timeline
+    st.write("### Timeline")
+    timeline_placeholder = st.empty()
+    with timeline_placeholder.container():
+        for year in years:
+            st.write(f"**{year}**", key=f"year_{year}")
+
+    st.write("### Events")
+    event_names = [event["event"] for event in events]
+    selected_order = [None] * len(years)
 
     for i, year in enumerate(years):
-        options = [None] + [event["event"] for event in events]
-        st.session_state.selected_order[i] = st.selectbox(f"Select the event for the year {year}:", options, key=f"select{i}")
+        selected_order[i] = st.selectbox(f"Select the event for the year {year}:", [None] + event_names, key=f"select_{i}")
 
     if st.button("Submit"):
         correct_order = [event["event"] for event in sorted(events, key=lambda x: x["year"])]
-        if check_order(st.session_state.selected_order, correct_order):
+        if check_order(selected_order, correct_order):
             st.success("Correct! The events are in the correct chronological order.")
         else:
             st.error("Incorrect. Try again.")
@@ -353,7 +361,8 @@ def timeline_puzzle():
 
     # Button to go back to the main menu
     if st.button("Back to Menu"):
-        del st.session_state.selected_order
+        for i in range(len(years)):
+            del st.session_state[f"select_{i}"]
         st.experimental_rerun()
 
 # Main function to integrate with the existing Streamlit app
