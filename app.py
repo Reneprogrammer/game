@@ -10,11 +10,11 @@ from rpg import rpg_game
 
 # List of background images
 background_images = [
-    "https://raw.githubusercontent.com/yourusername/yourrepository/main/image1.jpg",
-    "https://raw.githubusercontent.com/yourusername/yourrepository/main/image2.jpg",
-    "https://raw.githubusercontent.com/yourusername/yourrepository/main/image3.jpg",
-    "https://raw.githubusercontent.com/yourusername/yourrepository/main/image4.jpg",
-    "https://raw.githubusercontent.com/yourusername/yourrepository/main/image5.jpg"
+    "https://raw.githubusercontent.com/Reneprogrammer/game/main/image1.jpg",
+    "https://raw.githubusercontent.com/Reneprogrammer/game/main/image2.jpg",
+    "https://raw.githubusercontent.com/Reneprogrammer/game/main/image3.jpg",
+    "https://raw.githubusercontent.com/Reneprogrammer/game/main/image4.jpg",
+    "https://raw.githubusercontent.com/Reneprogrammer/game/main/image5.jpg"
 ]
 
 # List of articles
@@ -111,6 +111,15 @@ def display_rewards():
     if st.button("Back to Menu"):
         st.session_state.page = "game_selection"
         st.experimental_rerun()
+
+# Function to interact with OpenAI API
+def get_chatbot_response(user_input):
+    response = openai.Completion.create(
+        engine="davinci",
+        prompt=user_input,
+        max_tokens=150
+    )
+    return response.choices[0].text.strip()
 
 def trigger_confetti():
     confetti_script = """
