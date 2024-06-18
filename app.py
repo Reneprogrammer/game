@@ -1,6 +1,46 @@
 import streamlit as st
 import random
 
+# List of background images
+background_images = [
+    "https://github.com/yourusername/yourrepository/raw/main/image1.jpg",
+    "https://github.com/yourusername/yourrepository/raw/main/image2.jpg",
+    "https://github.com/yourusername/yourrepository/raw/main/image3.jpg",
+    "https://github.com/yourusername/yourrepository/raw/main/image4.jpg",
+    "https://github.com/yourusername/yourrepository/raw/main/image5.jpg"
+]
+
+# Function to set the background image
+def set_background_image():
+    if 'page' not in st.session_state:
+        st.session_state.page = "main_menu"
+    page_index = {
+        "main_menu": 0,
+        "game_selection": 1,
+        "quiz": 2,
+        "interactive_story": 3,
+        "timeline_puzzle": 4,
+        "rpg_game": 5
+    }.get(st.session_state.page, 0)
+    
+    bg_image = background_images[page_index % len(background_images)]
+    
+    st.markdown(
+        f"""
+        <style>
+        .stApp {{
+            background-image: url("{bg_image}");
+            background-size: cover;
+            background-position: center;
+        }}
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
+
+# Ensure background image is set
+set_background_image()
+
 # Function to load questions and answers
 def load_questions():
     return [
