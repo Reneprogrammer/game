@@ -2,6 +2,10 @@ import streamlit as st
 import random
 import streamlit.components.v1 as components
 import pandas as pd
+from quiz import quiz_section
+from story import story_section
+from rpg import rpg_section
+from timeline import timeline_section
 
 # Simulated database using dictionaries
 users_db = {
@@ -52,8 +56,9 @@ def set_background_image():
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
-            height: 100vh;
+            justify-content: flex-start;
+            min-height: 100vh;
+            padding-top: 50px;
         }}
         .main-content {{
             background: rgba(255, 255, 255, 0.8);
@@ -253,13 +258,13 @@ def main():
             st.button("Back", on_click=lambda: navigate_to('main_menu'))
 
         elif st.session_state.page == "timeline_puzzle":
-            timeline_puzzle()
+            timeline_section()
             st.session_state.progress["Timeline Puzzle"] = True
             st.button("Back to Menu", on_click=lambda: navigate_to('game_selection'))
             st.button("Back", on_click=lambda: navigate_to('main_menu'))
 
         elif st.session_state.page == "rpg_game":
-            rpg_game()
+            rpg_section()
             st.session_state.progress["RPG Game"] = True
             st.button("Back to Menu", on_click=lambda: navigate_to('game_selection'))
             st.button("Back", on_click=lambda: navigate_to('main_menu'))
