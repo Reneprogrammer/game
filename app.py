@@ -343,7 +343,13 @@ def timeline_puzzle():
 
     for i, year in enumerate(years):
         st.write(f"**{year}**")
-        st.session_state.selected_order[i] = st.selectbox(f"Select the event for the year {year}:", [None] + event_names, key=f"select_{i}")
+        selected_event = st.selectbox(
+            f"Select the event for the year {year}:",
+            [None] + event_names,
+            key=f"select_{i}",
+            index=[None] + event_names.index(st.session_state.selected_order[i]) if st.session_state.selected_order[i] else 0
+        )
+        st.session_state.selected_order[i] = selected_event
 
     if st.button("Submit"):
         correct_order = [event["event"] for event in sorted(events, key=lambda x: x["year"])]
