@@ -83,7 +83,13 @@ def quiz_section():
             st.session_state.current_question += 1
             st.experimental_rerun()
     else:
-        st.write(f"Your final score is: {st.session_state.score} out of {len(questions)}")
+        if st.session_state.score == len(questions):
+            st.success(f"Congratulations! You scored {st.session_state.score} out of {len(questions)}")
+            st.session_state.quiz_completed = True
+        else:
+            st.error(f"You scored {st.session_state.score} out of {len(questions)}. You need to score 5/5 to pass.")
+            st.session_state.quiz_completed = False
+        
         if st.button("Back to Menu"):
             del st.session_state.current_question
             del st.session_state.score
