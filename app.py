@@ -2,32 +2,22 @@ import streamlit as st
 import random
 import streamlit.components.v1 as components
 import pandas as pd
-import streamlit_authenticator as stauth
-import pymongo
-from pymongo import MongoClient
 
-# Database setup (MongoDB in this example)
-client = MongoClient('mongodb://localhost:27017/')
-db = client['sudan_conflict']
-users_collection = db['users']
-messages_collection = db['messages']
+# Simulated database using dictionaries
+users_db = {
+    'user1': 'password1',
+    'user2': 'password2'
+}
 
-# User authentication setup
-usernames = ['user1', 'user2']
-names = ['User One', 'User Two']
-passwords = ['password1', 'password2']
-
-hashed_passwords = stauth.Hasher(passwords).generate()
-
-authenticator = stauth.Authenticate(names, usernames, hashed_passwords, 'some_cookie_name', 'some_signature_key', cookie_expiry_days=30)
+messages_db = []
 
 # Background images and articles
 background_images = [
-    "https://raw.githubusercontent.com/yourusername/yourrepository/main/image1.jpg",
-    "https://raw.githubusercontent.com/yourusername/yourrepository/main/image2.jpg",
-    "https://raw.githubusercontent.com/yourusername/yourrepository/main/image3.jpg",
-    "https://raw.githubusercontent.com/yourusername/yourrepository/main/image4.jpg",
-    "https://raw.githubusercontent.com/yourusername/yourrepository/main/image5.jpg"
+    "https://raw.githubusercontent.com/Reneprogrammer/game/main/image1.jpg",
+    "https://raw.githubusercontent.com/Reneprogrammer/game/main/image2.jpg",
+    "https://raw.githubusercontent.com/Reneprogrammer/game/main/image3.jpg",
+    "https://raw.githubusercontent.com/Reneprogrammer/game/main/image4.jpg",
+    "https://raw.githubusercontent.com/Reneprogrammer/game/main/image5.jpg"
 ]
 
 articles = [
@@ -159,9 +149,7 @@ def display_discussion_board():
     st.title("Community Discussion Board")
     st.write("Share your thoughts and insights about the Sudan conflict here.")
     
-    messages = list(messages_collection.find())
-    
-    for message in messages:
+    for message in messages_db:
         st.write(f"**{message['username']}**: {message['message']}")
     
     st.write("### Post a Message")
@@ -172,7 +160,7 @@ def display_discussion_board():
                 "username": st.session_state["username"],
                 "message": new_message
             }
-            messages_collection.insert_one(message)
+            messages_db.append(message)
             st.experimental_rerun()
 
 def main():
@@ -182,11 +170,18 @@ def main():
 
     set_background_image()  # Ensure background image is set whenever the page is changed
 
-    name, authentication_status, username = authenticator.login('Login', 'main')
+    if 'username' not in st.session_state:
+        st.title("Login")
+        username = st.text_input("Username")
+        password = st.text_input("Password", type="password")
+        if st.button("Login"):
+            if username in users_db and users_db[username] == password:
+                st.session_state['username'] = username
+                st.experimental_rerun()
+            else:
+                st.error("Invalid username or password")
 
-    if authentication_status:
-        st.session_state['username'] = username
-
+    if 'username' in st.session_state:
         if st.session_state.page == "main_menu":
             st.title("Sudan Conflict")
             if st.button("Play"):
@@ -257,11 +252,6 @@ def main():
 
         elif st.session_state.page == "community":
             display_discussion_board()
-
-    elif authentication_status == False:
-        st.error('Username/password is incorrect')
-    elif authentication_status == None:
-        st.warning('Please enter your username and password')
 
     close_background_image()
 
