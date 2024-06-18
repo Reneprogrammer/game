@@ -9,11 +9,20 @@ from rpg import rpg_game
 
 # List of background images
 background_images = [
-    "https://raw.githubusercontent.com/Reneprogrammer/game/main/image1.jpg",
-    "https://raw.githubusercontent.com/Reneprogrammer/game/main/image2.jpg",
-    "https://raw.githubusercontent.com/Reneprogrammer/game/main/image3.jpg",
-    "https://raw.githubusercontent.com/Reneprogrammer/game/main/image4.jpg",
-    "https://raw.githubusercontent.com/Reneprogrammer/game/main/image5.jpg"
+    "https://raw.githubusercontent.com/yourusername/yourrepository/main/image1.jpg",
+    "https://raw.githubusercontent.com/yourusername/yourrepository/main/image2.jpg",
+    "https://raw.githubusercontent.com/yourusername/yourrepository/main/image3.jpg",
+    "https://raw.githubusercontent.com/yourusername/yourrepository/main/image4.jpg",
+    "https://raw.githubusercontent.com/yourusername/yourrepository/main/image5.jpg"
+]
+
+# List of articles
+articles = [
+    "Article 1: Understanding the Roots of the Sudan Conflict",
+    "Article 2: The Impact of the Sudan Conflict on Civilians",
+    "Article 3: International Efforts in Sudan: A Historical Overview",
+    "Article 4: Key Figures in the Sudan Conflict",
+    "Article 5: Future Prospects for Peace in Sudan"
 ]
 
 # Function to set the background image
@@ -24,7 +33,8 @@ def set_background_image():
         "quiz": 2,
         "interactive_story": 3,
         "timeline_puzzle": 4,
-        "rpg_game": 5
+        "rpg_game": 5,
+        "rewards": 6
     }.get(st.session_state.page, 0)
     
     bg_image = background_images[page_index % len(background_images)]
@@ -41,6 +51,28 @@ def set_background_image():
         unsafe_allow_html=True
     )
 
+def display_rewards():
+    st.title("Rewards")
+    st.write("Complete the games to unlock free articles about the Sudan conflict.")
+    
+    unlocked_articles = 0
+    for key in st.session_state.progress:
+        if st.session_state.progress[key]:
+            unlocked_articles += 1
+    
+    st.write(f"### Progress: {unlocked_articles}/4 games completed")
+    
+    # Display articles
+    for i, article in enumerate(articles):
+        if i < unlocked_articles or (unlocked_articles == 4 and i < 3):
+            st.write(f"**Unlocked**: {article}")
+        else:
+            st.write(f"**Locked**: {article}")
+    
+    if st.button("Back to Menu"):
+        st.session_state.page = "game_selection"
+        st.experimental_rerun()
+
 def main():
     if 'page' not in st.session_state:
         st.session_state.page = "main_menu"
@@ -52,6 +84,9 @@ def main():
         st.title("Sudan Conflict")
         if st.button("Play"):
             st.session_state.page = "game_selection"
+            st.experimental_rerun()
+        if st.button("Rewards"):
+            st.session_state.page = "rewards"
             st.experimental_rerun()
 
     elif st.session_state.page == "game_selection":
@@ -74,6 +109,10 @@ def main():
             st.session_state.page = "rpg_game"
             st.experimental_rerun()
 
+        if st.button("Rewards"):
+            st.session_state.page = "rewards"
+            st.experimental_rerun()
+
         st.write("### Progress")
         total_games = len(st.session_state.progress)
         completed_games = sum(st.session_state.progress.values())
@@ -94,6 +133,9 @@ def main():
     elif st.session_state.page == "rpg_game":
         rpg_game()
         st.session_state.progress["RPG Game"] = True
+
+    elif st.session_state.page == "rewards":
+        display_rewards()
 
 if __name__ == "__main__":
     main()
