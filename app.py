@@ -293,7 +293,12 @@ def story_section():
         st.session_state.current_part_id = "start"
 
     display_story_part(story, st.session_state.current_part_id)
-
+    
+    # Button to go back to the main menu
+    if st.button("Back to Menu"):
+        del st.session_state.current_part_id
+        st.experimental_rerun()
+        
 def main():
     st.title("Learn About the Sudan Conflict")
     st.sidebar.title("Navigation")
