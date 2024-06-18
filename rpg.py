@@ -1,6 +1,6 @@
 import streamlit as st
 
-def rpg_game():
+def rpg_section():
     st.title("RPG Game: Understanding the Sudan Conflict")
     st.write("""
     Welcome to this educational RPG game where you'll learn about the Sudan conflict through different scenarios.
