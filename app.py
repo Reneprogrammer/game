@@ -92,16 +92,17 @@ def set_background_image():
     )
 
 def close_background_image():
-    st.markdown(
-        f"""
+    if 'page_index' in st.session_state:
+        st.markdown(
+            f"""
+                </div>
+                <div class="image-container">
+                    <img src="{background_images[st.session_state.page_index % len(background_images)]}" alt="Background Image">
+                </div>
             </div>
-            <div class="image-container">
-                <img src="{background_images[st.session_state.page_index % len(background_images)]}" alt="Background Image">
-            </div>
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
+            """,
+            unsafe_allow_html=True
+        )
 
 def display_rewards():
     st.title("Rewards")
