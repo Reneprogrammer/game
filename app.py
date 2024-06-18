@@ -323,3 +323,56 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+# Function to load events
+def load_events():
+    return [
+        {"event": "The Sudanese Armed Forces and the Rapid Support Forces clashed", "year": 2019},
+        {"event": "Sudan gained independence from Britain", "year": 1956},
+        {"event": "Omar al-Bashir was ousted from power", "year": 2019},
+        {"event": "South Sudan became independent", "year": 2011},
+        {"event": "The Comprehensive Peace Agreement was signed", "year": 2005},
+    ]
+
+def check_order(selected_order, correct_order):
+    return selected_order == correct_order
+
+def timeline_puzzle():
+    st.header("Timeline Puzzle: Sudan Conflict")
+    st.write("Arrange the events in the correct chronological order:")
+
+    events = load_events()
+    correct_order = sorted(events, key=lambda x: x["year"])
+    event_names = [event["event"] for event in events]
+
+    if 'selected_order' not in st.session_state:
+        st.session_state.selected_order = [None] * len(events)
+
+    for i, event in enumerate(event_names):
+        st.session_state.selected_order[i] = st.selectbox(f"Select the position for: {event}", [None] + event_names, key=f"select{i}")
+
+    if st.button("Submit"):
+        correct_event_names = [event["event"] for event in correct_order]
+        if check_order(st.session_state.selected_order, correct_event_names):
+            st.success("Correct! The events are in the correct chronological order.")
+        else:
+            st.error("Incorrect. Try again.")
+            st.write("Correct Order:")
+            for event in correct_order:
+                st.write(f"{event['year']}: {event['event']}")
+
+def main():
+    st.title("Learn About the Sudan Conflict")
+    st.sidebar.title("Navigation")
+    options = st.sidebar.radio("Go to", ["Quiz", "Interactive Story", "Timeline Puzzle"])
+
+    if options == "Quiz":
+        quiz_section()
+    elif options == "Interactive Story":
+        story_section()
+    elif options == "Timeline Puzzle":
+        timeline_puzzle()
+
+if __name__ == "__main__":
+    main()
