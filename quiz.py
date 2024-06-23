@@ -73,7 +73,7 @@ def quiz_section():
         question = questions[current_question]
         st.write(f"### Question {current_question + 1}: {question['question']}")
         selected_option = st.radio(f"Select an option for question {current_question + 1}:", question["options"], key=f"q{current_question}")
-        if st.button(f"Submit Answer for Question {current_question + 1}", key=f"submit{current_question}"):
+        if st.button(f"Submit Answer for Question {current_question + 1}", key=f"submit_{current_question}"):
             if check_answer(question, selected_option):
                 st.success("Correct!")
                 st.session_state.score += 1
