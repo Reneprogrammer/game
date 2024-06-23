@@ -86,13 +86,13 @@ def set_background_image():
             height: auto;
             max-width: 600px;
         }}
-        .stButton {
+        .stButton {{
             display: flex;
             justify-content: space-between;
-        }
-        .rewards-button {
+        }}
+        .rewards-button {{
             margin-left: auto;
-        }
+        }}
         </style>
         """,
         unsafe_allow_html=True
