@@ -56,7 +56,3 @@ def rpg_section():
     Thank you for playing this RPG game. Through these scenarios, we hope you have gained a better understanding of the complexities and human impact of the Sudan conflict.
     For more information and ways to help, please visit reputable sources and organizations working in the region.
     """)
-
-    if st.button("Back to Menu"):
-        st.session_state.page = "game_selection"
-        st.experimental_rerun()
