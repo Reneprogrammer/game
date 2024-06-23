@@ -212,8 +212,3 @@ def story_section():
         st.session_state.current_part_id = "start"
 
     display_story_part(story, st.session_state.current_part_id)
-
-    if st.button("Back to Menu"):
-        del st.session_state.current_part_id
-        st.session_state.page = "game_selection"
-        st.experimental_rerun()
