@@ -18,17 +18,15 @@ def timeline_section():
     st.write("Arrange the events in the correct chronological order:")
 
     events = load_events()
-    years = sorted(event["year"] for event in events)
     random.shuffle(events)  # Shuffle events to randomize their order
 
     if 'selected_order' not in st.session_state:
-        st.session_state.selected_order = [None] * len(years)
-
-    for i, year in enumerate(years):
-        st.write(f"**{year}**")
-        options = [None] + [event["event"] for event in events]
+        st.session_state.selected_order = [None] * len(events)
+    
+    for i, event in enumerate(events):
+        options = [None] + [e["event"] for e in events]
         st.session_state.selected_order[i] = st.selectbox(
-            f"Select the event for the year {year}:",
+            f"Select the event for year {event['year']}:",
             options,
             index=options.index(st.session_state.selected_order[i]) if st.session_state.selected_order[i] else 0,
             key=f"select_{i}"
@@ -43,8 +41,3 @@ def timeline_section():
             st.write("Correct Order:")
             for event in sorted(events, key=lambda x: x["year"]):
                 st.write(f"{event['year']}: {event['event']}")
-
-    if st.button("Back to Menu"):
-        del st.session_state['selected_order']
-        st.session_state.page = "game_selection"
-        st.experimental_rerun()
